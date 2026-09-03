@@ -103,11 +103,13 @@ interface:
   brand_color: "#3B82F6"
 ```
 
-The managed-Skills list prefers `icon_small`, falls back to `icon_large`, and then uses a generic semantic icon. This keeps icon customization with the Skill, so authors and users can replace an icon without changing Skills Hub source code.
+The managed-Skills list prefers `icon_small`, falls back to `icon_large`, and then uses a generic semantic icon. Icon paths are resolved relative to the Skill root. This keeps icon customization with the Skill, so authors and users can replace an icon without changing Skills Hub source code.
+
+This repository publishes the generic reading and rendering mechanism, not a catalog that assigns personal avatars or third-party logos to Skills. Skill authors and users choose their own assets and are responsible for having permission to redistribute them.
 
 The card renders one icon edge-to-edge in its 48 px rounded tile with no overlay badge. For consistent optical fill, use a square asset with a tightly cropped artboard; transparent padding inside the source image remains part of the image and should be removed from the asset itself.
 
-For safety, icon paths must be relative, stay inside the Skill directory after canonicalization, and point to a regular non-symlink SVG, PNG, JPEG, or WebP file no larger than 128 KiB. Raster icons are limited to 512×512 and 262,144 pixels. URLs, absolute paths, `..`, active SVG content, oversized raster dimensions, mismatched file signatures, and invalid colors are ignored. The parser reads the block-style `interface` keys shown above. `brand_color` is optional and must use `#RRGGBB`. The managed list also caps the combined encoded icon payload at 12 MiB; icons beyond that response budget fall back to the generic icon without changing Skill health.
+For safety, `agents/openai.yaml` must be no larger than 64 KiB. Icon paths must be relative, stay inside the Skill directory after canonicalization, and point to a regular non-symlink SVG, PNG, JPEG, or WebP file no larger than 128 KiB. Raster icons are limited to 512×512 and 262,144 pixels. URLs, absolute paths, `..`, active SVG content, oversized raster dimensions, mismatched file signatures, and invalid colors are ignored. The parser reads the block-style `interface` keys shown above. `brand_color` is optional, must use `#RRGGBB`, and is applied only when a valid Skill-provided icon is accepted. The managed list also caps the combined encoded icon payload at 12 MiB; icons beyond that response budget fall back to the generic icon without changing Skill health.
 
 ## Supported AI Coding Tools
 
@@ -180,6 +182,8 @@ npm run tauri:dev
 
 ### Build
 
+These commands build the app locally from source. This repository does not distribute an official installer or binary release.
+
 ```bash
 npm run lint
 npm run build
@@ -212,6 +216,7 @@ cargo test
 
 ## FAQ / Notes
 
+- Is `index.html` a hosted website? No. It is the Vite entry point embedded in the Tauri desktop app. This repository does not configure or publish GitHub Pages.
 - Where are skills stored? This fork fixes the central source of truth at `~/.agents/skills`; tool-specific directories are validated sync targets rather than co-equal sources.
 - What are tags for? Tags help you find and organize skills. They do not change where a skill is synced or which tools can use it.
 - What is Management Center for? Management Center handles tags, tool targets, and automatic skill updates. Settings keeps app-level preferences.
