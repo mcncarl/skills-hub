@@ -495,7 +495,7 @@ const SkillDetailView = ({
       setLoadingFiles(true)
       try {
         const result = await invokeTauri<SkillFileEntry[]>('list_skill_files', {
-          centralPath: skill.central_path,
+          skillId: skill.id,
         })
         if (cancelled) return
         setFiles(result)
@@ -516,7 +516,7 @@ const SkillDetailView = ({
     return () => {
       cancelled = true
     }
-  }, [invokeTauri, skill.central_path, t])
+  }, [invokeTauri, skill.id, t])
 
   useEffect(() => {
     if (!activeFile) return
@@ -525,7 +525,7 @@ const SkillDetailView = ({
       setLoadingContent(true)
       try {
         const content = await invokeTauri<string>('read_skill_file', {
-          centralPath: skill.central_path,
+          skillId: skill.id,
           filePath: activeFile,
         })
         if (!cancelled) setFileContent(content)
@@ -542,7 +542,7 @@ const SkillDetailView = ({
     return () => {
       cancelled = true
     }
-  }, [activeFile, invokeTauri, skill.central_path])
+  }, [activeFile, invokeTauri, skill.id])
 
   const handleSelectFile = useCallback((path: string) => {
     setActiveFile(path)
